@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Expo Metro Bundler
+  expo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: finance-manager-expo
+    ports:
+      - "11000:11000"  # Metro Bundler
+      - "3000:3000"  # Backend API (если используется)
+    volumes:
+      # Монтируем исходный код для hot reload
+      - ./app:/app/app
+      - ./components:/app/components
+      - ./lib:/app/lib
+      - ./hooks:/app/hooks
+      - ./types:/app/types
+      - ./assets:/app/assets
+      - ./tests:/app/tests
+      # Исключаем node_modules из монтирования
+      - /app/node_modules
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - EXPO_USE_METRO_WORKSPACE_ROOT=1
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
+    networks:
+      - finance-network
+
+networks:
+  finance-network:
+    driver: bridge
